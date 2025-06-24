@@ -18,3 +18,18 @@ Software for Controlling Laboratory Magnetron Sputtering Equipment
 
 
 <img width="1308" alt="UI" src="https://github.com/user-attachments/assets/0571d92f-3e5c-4572-a7b3-520bb3887808" />
+
+
+
+
+## 真空获取与测量清单
+
+
+
+
+## 电源清单
+
+
+
+
+## 数据采集、继电器、通讯等清单
