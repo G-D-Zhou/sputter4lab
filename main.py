@@ -142,7 +142,7 @@ class MainApp(QMainWindow):
       
        
 ############################各种阀门################################################      
-        
+    # 后期需要考虑是否加互锁，还要有个互锁全部解开的账户登录。    
     #点击按钮的槽，控制前级阀门
     @pyqtSlot()
     def on_foreline_valve_button_clicked(self): 
@@ -168,7 +168,10 @@ class MainApp(QMainWindow):
         if self.state_foreline_valve == False:
             self.foreline_valve_button.setStyleSheet(
                                         '''
-                                        QPushButton{ background-color: rgb(166, 183, 189);}
+                                        QPushButton{ background-color: rgb(166, 183, 189);
+                                                    font: 16pt "Arial";
+                                                    border:1px solid rgb(3, 86, 161);
+                                                    border-radius: 6px;}
                                         '''
                                         ) 
             
@@ -176,17 +179,26 @@ class MainApp(QMainWindow):
             self.line_21.setStyleSheet("background-color: rgb(166, 183, 189);")
             self.line_12.setStyleSheet("background-color: rgb(166, 183, 189);")
             
+            # 以下三个仅当分子泵和前级阀门均关闭时，才灰色
+            # self.line_127.setStyleSheet("background-color: rgb(166, 183, 189);")
+            # self.line_25.setStyleSheet("background-color: rgb(166, 183, 189);")
+            # self.line_125.setStyleSheet("background-color: rgb(166, 183, 189);")
             
         elif self.state_foreline_valve == True:
             self.foreline_valve_button.setStyleSheet(
                 '''
-                QPushButton{background-color: rgb(35, 85, 21);}
+                QPushButton{background-color: rgb(35, 85, 21);
+                            font: 16pt "Arial";
+                            border:1px solid rgb(3, 86, 161);
+                            border-radius: 6px;}
                 '''
                 )
             self.line_18.setStyleSheet("background-color: rgb(35, 85, 21);")
             self.line_21.setStyleSheet("background-color: rgb(35, 85, 21);")
             self.line_12.setStyleSheet("background-color: rgb(35, 85, 21);")
-            
+            self.line_127.setStyleSheet("background-color: rgb(35, 85, 21);")
+            self.line_25.setStyleSheet("background-color: rgb(35, 85, 21);")
+            self.line_125.setStyleSheet("background-color: rgb(35, 85, 21);")
     
     ## 粗抽阀门
     
@@ -195,6 +207,33 @@ class MainApp(QMainWindow):
     
     
     ## 插板阀
+    def changeGateValve_button(self):
+        if self.state_gateValve == False:
+            self.gateValve_button.setStyleSheet(
+                                        '''
+                                        QPushButton{ background-color: rgb(166, 183, 189);
+                                                    font: 16pt "Arial";
+                                                    border:1px solid rgb(3, 86, 161);
+                                                    border-radius: 6px;}
+                                        '''
+                                        ) 
+            
+            self.line_116.setStyleSheet("background-color: rgb(166, 183, 189);")
+
+            
+            
+        elif self.state_gateValve == True:
+            self.gateValve_button.setStyleSheet(
+                '''
+                QPushButton{background-color: rgb(35, 85, 21);
+                            font: 16pt "Arial";
+                            border:1px solid rgb(3, 86, 161);
+                            border-radius: 6px;}
+                '''
+                )
+            self.line_116.setStyleSheet("background-color: rgb(35, 85, 21);")
+
+             
     
     ## 旁抽阀
     
@@ -280,7 +319,11 @@ class MainApp(QMainWindow):
         if self.state_screw_pump_valve == False:
             self.screw_pump_button.setStyleSheet(
                                         '''
-                                        QPushButton{background-color: rgb(166, 183, 189);}
+                                        QPushButton{background-color: rgb(166, 183, 189);
+                                                    font: 16pt "Arial";
+                                                    border:1px solid rgb(3, 86, 161);
+                                                    border-radius: 6px;}
+                                        
                                         '''
                                         ) 
             self.line_17.setStyleSheet("background-color: rgb(166, 183, 189);")
@@ -293,7 +336,10 @@ class MainApp(QMainWindow):
         elif self.state_screw_pump_valve == True:
             self.screw_pump_button.setStyleSheet(
                                         '''
-                                        QPushButton{background-color: rgb(35, 85, 21);}
+                                        QPushButton{background-color: rgb(35, 85, 21);
+                                                    font: 16pt "Arial";
+                                                    border:1px solid rgb(3, 86, 161);
+                                                    border-radius: 6px;}
                                         '''
                                         ) 
             self.line_17.setStyleSheet("background-color: rgb(35, 85, 21);")
@@ -455,11 +501,45 @@ class MainApp(QMainWindow):
         relay_status = Relay.checkAllState(self.serRelay)
         
         
-        #### 继电器状态
-        self.state_foreline_valve = relay_status["Y11"] # 前级阀门状态
-        self.state_gate_valve = relay_status["Y12"] # 插板阀
-        #self.state_TMP = relay_
+        #### 继电器状态以及根据继电器状态修改UI
+        # Y1
+        # Y2
+        # Y3
+        # Y4
+        # Y5
+        # Y6
+        # Y7
+        # Y8
+        # Y9
+        # Y10
         
+        self.state_foreline_valve = relay_status["Y11"] # 前级阀门状态
+        self.changeForeline_valve_button() # 根据继电器状态改变前级阀门在Ui中的显示
+        
+        self.state_gateValve = relay_status["Y12"] # 插板阀
+        self.changeGateValve_button()
+        
+        #self.state_TMP = relay_ # 分子泵 Y13
+        
+        # Y14
+        
+        self.state_diaphragmValve_Ar = relay_status["Y15"] # 氩气隔膜阀
+        
+        
+        # Y16
+        self.state_diaphragmValve_relieving = relay_status["Y17"] # 泄压隔膜阀
+        self.state_shutter_substrateClose = relay_status["Y18"] # 衬底挡板关
+        #Y19
+        self.state_shutter_target1_Open =  relay_status["Y20"] # 靶头1开
+        self.state_angleValve_bypass = relay_status["Y21"] # 旁路真空角阀
+        #Y22
+        self.state_diaphragmValve_O2 = relay_status["Y23"] # 氩气隔膜阀
+        #Y24
+        self.state_angleValve_roughPump = relay_status["Y25"] # 粗抽角阀
+        self.state_shutter_substrateOpen = relay_status["Y26"] # 衬底挡板开
+        #Y27
+        self.state_shutter_target1_Close =  relay_status["Y28"] # 靶头1关
+        #Y29   
         self.state_DryPumpRemote_valve = relay_status["Y30"] #是否远程干泵
         #self.state_DryPumpReset_valve = relay_status["Y31"] #reset干泵，应该无需检查状态
         self.state_screw_pump_valve = relay_status["Y32"] #干泵是否启动
@@ -468,7 +548,7 @@ class MainApp(QMainWindow):
         
         
         #### 根据继电器状态修改UI
-        self.changeForeline_valve_button() # 根据继电器状态改变前级阀门在Ui中的显示
+        
         self.changeScrew_pump_button()   # 根据干泵是否启动，改变干泵在UI中的显示
         self.changeDryPumpRemote_action() # 根据是否在远程控制干泵，改变远程在Ui中的显示
 
