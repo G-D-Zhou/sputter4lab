@@ -15,4 +15,6 @@ Software for Controlling Laboratory Magnetron Sputtering Equipment
 
 ## UI预览
 
- ![Uploading image.png…]()
+
+
+<img width="1308" alt="UI" src="https://github.com/user-attachments/assets/0571d92f-3e5c-4572-a7b3-520bb3887808" />
